@@ -1,0 +1,256 @@
+---
+description: Configuração inicial padrão para APIs backend com Node.js, TypeScript e Fastify
+alwaysApply: false
+---
+
+# Backend Initial Setup
+
+Configure a aplicação backend seguindo obrigatoriamente as especificações abaixo.
+
+## Stack
+
+Utilizar:
+
+- Node.js
+- TypeScript
+- Fastify
+- pnpm
+- tsx
+- tsup
+- dotenv
+- Zod
+
+O projeto deve utilizar TypeScript com configuração adequada para execução em desenvolvimento e build para produção.
+
+## 1. Gerenciador de pacotes
+
+Utilizar exclusivamente `pnpm` como package manager.
+
+Não utilizar npm ou yarn para instalar dependências ou executar scripts relacionados ao gerenciamento do projeto.
+
+Criar o `package.json` utilizando pnpm.
+
+## 2. Dependências de desenvolvimento
+
+Instalar como `devDependencies`:
+
+```bash
+pnpm add -D typescript tsx tsup @types/node
+```
+
+## 3. TypeScript
+
+Criar o arquivo `tsconfig.json` executando:
+
+```bash
+pnpm tsc -- init
+```
+
+A configuração deve ser compatível com:
+
+- Node.js
+- TypeScript
+- Execução utilizando `tsx`
+- Build utilizando `tsup`
+
+O código-fonte deve ficar dentro do diretório `src/`
+
+## 4. Scripts do package.json
+
+O `package.json` deve possuir exatamente os seguintes scripts:
+
+```json
+{
+  "scripts": {
+    "start:dev": "tsx watch src/server.ts",
+    "start": "node build/server.cjs",
+    "build": "tsup src --outDir build"
+  }
+}
+```
+
+Não alterar esses scripts sem necessidade explícita.
+
+## 5. Fastify
+
+Instalar o fastify:
+
+```bash
+pnpm add fastify
+```
+
+Criar o servidor principal em: `src/server.ts`. O servidor deve:
+
+- Utilizar Fastify
+- Iniciar na porta definida pela variável de ambiente PORT
+- Utilizar 3333 como porta padrão
+- Exibir no console a mensagem: `Server is running...` após o servidor iniciar corretamente
+
+A implementação final deve utilizar a configuração de ambiente definida nas etapas seguintes.
+
+## 6. .npmrc
+
+Criar `.npmrc` na raiz do projeto. O conteúdo deve ser:
+
+`save-exact=true`
+
+Todas as dependências instaladas pelo pnpm devem ser registradas utilizando versões exatas.
+
+## 7. .gitignore
+
+Criar `.gitignore` na raiz do projeto. Adicione obrigatoriamente:
+
+```
+node_modules
+build
+.env
+```
+
+Esses arquivos e diretórios não devem ser versionados pelo Git.
+
+## 8. Variáveis de ambiente
+
+Criar o arquivo `.env` na raiz do projeto.
+
+Instalar dotenv:
+
+```bash
+pnpm add dotenv
+```
+
+Carregar automaticamente as variáveis de ambiente utilizando:
+
+```typescript
+import 'dotenv/config';
+```
+
+As variáveis de ambiente não devem ser acessadas diretamente espalhadas pela aplicação.
+
+Centralizar a leitura e validação das variáveis de ambiente em um módulo específico.
+
+## 9. Validação das variáveis de ambiente
+
+Instalar zod:
+
+```bash
+pnpm add zod
+```
+
+Utilizar Zod para validar as variáveis de ambiente no momento em que a aplicação é inicializada.
+
+As seguintes variáveis devem existir:
+
+- NODE_ENV
+
+Deve aceitar somente:
+
+- `dev`
+- `test`
+- `production`
+- Utilizar `dev` como valor padrão
+
+Schema esperado:
+
+```typescript
+NODE_ENV: z
+  .enum(['dev', 'test', 'production'])
+  .default('dev')
+```
+
+- PORT
+
+Deve:
+
+- Utilizar 3333 como valor padrão
+- Aceitar somente valores numéricos
+
+O valor recebido pelo `.env` inicialmente é uma string, portanto deve ser convertido/validado corretamente para `number`. Exemplo:
+
+```typescript
+PORT: z.coerce.number().default(3333)
+```
+
+## 10. Organização das configurações
+
+Criar um módulo específico para as variáveis de ambiente.
+
+Estrutura inicial esperada:
+
+```
+.
+├── .cursor/
+│   └── rules/
+│       └── project-setup.mdc
+├── src/
+│   ├── env/
+│   │   └── index.ts
+│   └── server.ts
+├── .env
+├── .gitignore
+├── .npmrc
+├── package.json
+├── pnpm-lock.yaml
+└── tsconfig.json
+```
+
+O arquivo `src/env/index.ts` deve ser responsável por:
+
+- Carregar as variáveis do .env
+- Definir o schema do Zod
+- Validar NODE_ENV
+- Validar PORT
+- Aplicar os valores padrão
+- Exportar um objeto `env` tipado contendo as configurações
+
+Exemplo:
+
+```typescript
+import 'dotenv/config';
+import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['dev', 'test', 'production'])
+    .default('dev'),
+
+  PORT: z.coerce
+    .number()
+    .default(3333),
+});
+
+export const env = envSchema.parse(process.env);
+```
+
+O `server.ts` deve consumir as configurações através desse módulo:
+
+```typescript
+import fastify from 'fastify';
+import { env } from './env';
+
+export const app = fastify();
+
+app
+  .listen({
+    port: env.PORT,
+  })
+  .then(() => {
+    console.log('Server is running...');
+  });
+  ```
+
+  ## 11. Regras de implementação
+
+Ao executar esta regra:
+
+1. Verifique se os arquivos necessários já existem antes de criá-los.
+2. Não sobrescreva configurações existentes sem verificar o conteúdo atual.
+3. Caso uma dependência já esteja instalada, não a reinstale desnecessariamente.
+4. Utilize pnpm para todas as instalações.
+5. Utilize versões exatas das dependências.
+6. Não adicione bibliotecas que não foram solicitadas.
+7. Não crie arquitetura adicional neste momento.
+8. Não crie controllers, routes, services, repositories ou módulos de domínio ainda.
+9. Mantenha a configuração inicial simples e preparada para expansão futura.
+10. Ao finalizar, verifique se os scripts `start:dev`, `build` e `start` estão funcionando.
+11. Verifique se o TypeScript não apresenta erros.
+12. Verifique se a aplicação consegue iniciar utilizando a porta definida em `PORT`.
