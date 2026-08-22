@@ -8,33 +8,34 @@ datasource db {
 }
 
 model Client {
-  id        String    @id @default(uuid())
-  name      String
-  telephone String?
-  createdAt DateTime  @default(now())
-  addresses Address[]
-  orders    Order[]
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  telephone  String?
+  created_at DateTime  @default(now())
+  addresses  Address[]
+  orders     Order[]
 
   @@map("clients")
 }
 
 model Address {
-  id         String  @id @default(uuid())
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   street     String?
   number     String?
   complement String?
   zipCode    String?
 
   client    Client @relation(fields: [client_id], references: [id])
-  client_id String
+  client_id String @db.Uuid
 
   @@map("addresses")
 }
 
 model Product {
-  id          String      @id @default(uuid())
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   description String?
+  category    String
   price       Float
   orderItems  OrderItem[]
 
@@ -58,29 +59,30 @@ enum PaymentMethod {
 }
 
 model Order {
-  id             String        @id @default(uuid())
-  status         OrderStatus
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status         OrderStatus   @default(preparing)
   type           OrderType
   payment_method PaymentMethod
-  createdAt      DateTime      @default(now())
+  total_price    Float
+  created_at     DateTime      @default(now())
 
   client     Client      @relation(fields: [client_id], references: [id])
-  client_id  String
+  client_id  String      @db.Uuid
   orderItems OrderItem[]
 
   @@map("orders")
 }
 
 model OrderItem {
-  id          String @id @default(uuid())
-  quantity    Int
-  total_price Float
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quantity   Int
+  unit_price Float
 
   order    Order  @relation(fields: [order_id], references: [id])
-  order_id String
+  order_id String @db.Uuid
 
   product    Product @relation(fields: [product_id], references: [id])
-  product_id String
+  product_id String  @db.Uuid
 
   @@map("order_items")
 }
