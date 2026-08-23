@@ -1,10 +1,17 @@
 import fastify from 'fastify';
+import cors from '@fastify/cors';
 import { env } from './env';
 import { prisma } from './lib/prisma';
 import { startOfDay, addDays, startOfMonth, endOfMonth } from 'date-fns';
 import z from 'zod';
 
 export const app = fastify();
+
+app.register(cors, {
+  origin: ['http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  credentials: true
+})
 
 app.get('/orders', async (req, reply) => {
   const GetQuerySchema = z.object({
