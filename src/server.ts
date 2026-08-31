@@ -37,6 +37,10 @@ app.get('/orders', async (req, reply) => {
       }),
     },
 
+    orderBy: {
+      created_at: 'desc',
+    },
+
     select: {
       id: true,
       status: true,
