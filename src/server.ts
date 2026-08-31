@@ -196,6 +196,33 @@ app.post('/orders', async (request, reply) => {
   return reply.status(201).send();
 });
 
+app.patch('/orders/:id/status', async (req, reply) => {
+  const updateStatusParamsSchema = z.object({
+    id: z.uuid(),
+  });
+
+  const { id } = updateStatusParamsSchema.parse(req.params);
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+  });
+
+  if (!order) {
+    return reply.status(404).send({ message: 'Order not found' });
+  }
+
+  await prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      status: 'ready',
+    },
+  })
+
+  return reply.status(204).send();
+});
+
 app.get('/products', async () => {
   const products = await prisma.product.findMany();
   return { products };
