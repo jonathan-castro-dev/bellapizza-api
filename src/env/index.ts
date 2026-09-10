@@ -9,6 +9,9 @@ const envSchema = z.object({
   PORT: z.coerce
     .number()
     .default(3333),
+
+  FRONTEND_LOCAL_URL: z.string(),
+  FRONTEND_PROD_URL: z.string(),
     
   DATABASE_URL: z.string(),
 });

@@ -8,7 +8,7 @@ import z from 'zod';
 export const app = fastify();
 
 app.register(cors, {
-  origin: ['http://localhost:5173'],
+  origin: [env.FRONTEND_LOCAL_URL, env.FRONTEND_PROD_URL],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 })
