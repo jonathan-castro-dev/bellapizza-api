@@ -2,11 +2,11 @@
   "name": "bellapizza-api-teste",
   "version": "1.0.0",
   "description": "",
-  "main": "build/server.cjs",
+  "main": "build/server.js",
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
-    "start": "node build/server.cjs",
-    "build": "prisma generate && tsup src --outDir build"
+    "start": "node build/server.js",
+    "build": "prisma generate && tsup src --outDir build --format esm"
   },
   "keywords": [],
   "author": "",
