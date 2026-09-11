@@ -230,16 +230,23 @@ app.patch('/orders/:id/status', async (req, reply) => {
 });
 
 app.get('/products', async () => {
-  const products = await prisma.product.findMany();
+  //const products = await prisma.product.findMany();
 
-  console.log('Quantidade de produtos: ', products.length);
+  console.log('entrou na rota products');
 
-  return { products };
+  return {
+    products: [
+      {
+        id: '1',
+        name: 'Pizza Margherita'
+      }
+    ]
+  };
 });
 
 app
   .listen({
-    port: Number(process.env.PORT) ?? 3333,
+    port: Number(process.env.PORT) || 3333,
     host: '0.0.0.0'
   })
   .then(() => {
