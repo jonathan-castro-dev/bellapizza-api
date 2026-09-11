@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import fastify from 'fastify';
 import cors from '@fastify/cors';
 import { env } from './env';
@@ -10,8 +9,8 @@ export const app = fastify();
 
 app.register(cors, {
   origin: [
-    'https://bellapizza-client.vercel.app',
-    'http://localhost:5173'
+    env.FRONTEND_LOCAL_URL,
+    env.FRONTEND_PROD_URL
   ]
 })
 
@@ -230,25 +229,14 @@ app.patch('/orders/:id/status', async (req, reply) => {
 });
 
 app.get('/products', async () => {
-  console.log('--- GET /products ---');
+  const products = await prisma.product.findMany();
 
-  const products1 = await prisma.product.findMany();
-
-  console.log('Primeira consulta:', products1.length);
-
-  const products2 = await prisma.product.findMany();
-
-  console.log('Segunda consulta:', products2.length);
-
-  return {
-      first: products1,
-      second: products2,
-  };
+  return { products };
 });
 
 app
   .listen({
-    port: Number(process.env.PORT) || 3333,
+    port: env.PORT,
     host: '0.0.0.0'
   })
   .then(() => {
