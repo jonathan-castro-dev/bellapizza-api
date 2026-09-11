@@ -11,7 +11,8 @@ const envSchema = z.object({
     .default(3333),
 
   FRONTEND_LOCAL_URL: z.string(),
-  FRONTEND_PROD_URL: z.string(),
+  FRONTEND_CLIENT_PROD_URL: z.string(),
+  FRONTEND_ADMIN_PROD_URL: z.string(),
     
   DATABASE_URL: z.string(),
 });

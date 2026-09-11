@@ -10,7 +10,8 @@ export const app = fastify();
 app.register(cors, {
   origin: [
     env.FRONTEND_LOCAL_URL,
-    env.FRONTEND_PROD_URL
+    env.FRONTEND_CLIENT_PROD_URL,
+    env.FRONTEND_ADMIN_PROD_URL
   ]
 })
 
