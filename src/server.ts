@@ -230,17 +230,19 @@ app.patch('/orders/:id/status', async (req, reply) => {
 });
 
 app.get('/products', async () => {
-  //const products = await prisma.product.findMany();
+  console.log('--- GET /products ---');
 
-  console.log('entrou na rota products');
+  const products1 = await prisma.product.findMany();
+
+  console.log('Primeira consulta:', products1.length);
+
+  const products2 = await prisma.product.findMany();
+
+  console.log('Segunda consulta:', products2.length);
 
   return {
-    products: [
-      {
-        id: '1',
-        name: 'Pizza Margherita'
-      }
-    ]
+      first: products1,
+      second: products2,
   };
 });
 
