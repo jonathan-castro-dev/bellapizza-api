@@ -12,7 +12,8 @@ app.register(cors, {
     env.FRONTEND_LOCAL_URL,
     env.FRONTEND_CLIENT_PROD_URL,
     env.FRONTEND_ADMIN_PROD_URL
-  ]
+  ],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 })
 
 app.get('/orders', async (req, reply) => {
