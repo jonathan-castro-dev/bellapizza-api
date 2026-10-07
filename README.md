@@ -54,8 +54,8 @@ Crie o arquivo de configuração ```.env``` na raiz do projeto e adicione as var
 
 ```yaml
 FRONTEND_LOCAL_URL={URL_SEU_APP_LOCAL}
-FRONTEND_CLIENT_PROD_URL=https://bellapizza-client.vercel.app/
-FRONTEND_ADMIN_PROD_URL=https://bellapizza-admin-beta.vercel.app/
+FRONTEND_CLIENT_PROD_URL={URL_SEU_APP_EM_PRODUCAO}
+FRONTEND_ADMIN_PROD_URL={URL_SEU_APP_EM_PRODUCAO}
 DATABASE_URL={URL_CONEXAO_BANCO_POSTGRES}
 ```
 
